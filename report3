@@ -131,7 +131,7 @@ then
     then
         #                       -h          help (show this information)
         echo
-        echo "   Usage: ./report2 <option> [optional value]"
+        echo "   Correct syntax is: ./report2 <option> [optional value]"
         echo
         echo "   -m          me (the same as whoami)"
         echo "   -i u        IP address of user"
@@ -171,10 +171,10 @@ then
     elif [ $param1 = "-i" ] && [ $param2 = "s" ]
     then
         #                       -i s        IP address of server
-        serverIP=$(hostname -I | cut -d' ' -f1) # get the IP address of the server
+        serverIP=$(hostname -I | cut -d' ' -f1)  # get the IP address of the server
 
         echo
-        echo "      Server IP Address : $userIP"
+        echo "      Server IP Address : $serverIP"
         echo
 
     fi
