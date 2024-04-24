@@ -206,12 +206,12 @@ then
     then
         #                       -l n        this is letter l, gives last n logins (for this user)
         lines=$param2
-        userIP=`who am i | cut -d '(' -f2 | cut -d ')' -f1` # get the IP address of the user running the script
+        loginData=$(last -$lines $userName | grep -v "wtmp") # get the last several logins for the user
 
         echo
         echo "      Last $lines logins for this user :"
         echo
-        last -n $n $userName
+        echo "$loginData"
         echo
 
     fi
