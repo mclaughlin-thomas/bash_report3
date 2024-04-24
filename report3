@@ -110,7 +110,9 @@ then
     then
         #                       -u          show all logged in users
         echo
-        echo "The same as whoami"
+        echo "      All logged in users :"
+        echo
+        echo "$(who)" # maybe     who | cut -d' ' -f1 | sort | uniq   to get only the usernames
         echo
 
     elif [ $param1 = "-w" ]
@@ -128,6 +130,8 @@ then
     elif [ $param1 = "-h" ]
     then
         #                       -h          help (show this information)
+        echo
+        echo "   Usage: ./report2 <option> [optional value]"
         echo
         echo "   -m          me (the same as whoami)"
         echo "   -i u        IP address of user"
