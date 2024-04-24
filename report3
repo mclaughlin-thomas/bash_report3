@@ -54,34 +54,41 @@ then
  
     if [ $param1 = "-m" ]
     then
-        echo "The same as whoami"
         echo "Username: $userName"
     elif [ $param1 = "-n" ]
     then
-        echo "The same as whoami"
+        #-n          username (for example, jonesb)
     elif [ $param1 = "-f" ]
     then
+        #                       -f          fullname (of the user)
         echo "The same as whoami"
     elif [ $param1 = "-d" ]
     then
+        #                       -d          home directory (for this user)
         echo "The same as whoami"
     elif [ $param1 = "-s" ]
     then
+        #                       -s          shell (for this user, will probably be bash)
         echo "The same as whoami"
     elif [ $param1 = "-p" ]
     then
+        #                       -p          password expiration info
         echo "The same as whoami"
     elif [ $param1 = "-t" ]
     then
+        #                       -t          display system uptime
         echo "The same as whoami"
     elif [ $param1 = "-u" ]
     then
+        #                       -u          show all logged in users
         echo "The same as whoami"
     elif [ $param1 = "-w" ]
     then
+        #                       -w          report if the web server is running
         echo "The same as whoami"
     elif [ $param1 = "-h" ]
     then
+        #                       -h          help (show this information)
         echo "The same as whoami"
     fi
 
