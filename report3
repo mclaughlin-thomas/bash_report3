@@ -36,17 +36,30 @@ InitialIPaddress=`who am i | cut -d '(' -f2 | cut -d ')' -f1` # get the IP addre
 
 defaultLines=15 
 
-if [ $# -gt 1 ] # if more than 1 argument is provided, exit the script
-then
-    echo "Error! Too many arguments provided!"
-    echo "Correct syntax is: ./report2 <how many lines you want>"
-    exit 1
-fi
+
 
 if [ $# -eq 1 ] # if 1 argument is provided, set the defaultLines to the argument provided
 then
-   defaultLines=$1
+    echo "One paramerter provided"
+    param1=$1
+elif [ $# -eq 2 ] # if 2 arguments are provided, set the defaultLines to the argument provided
+then
+    echo "Two paramerter provided"
+    param1=$1 #HERE3
+    param1=$2 #HERE
+elif [ $# -gt 2 ] # if more than 1 argument is provided, exit the script
+then
+    echo "Error! Too many arguments provided!"
+    echo "Correct syntax is: ./report2 <option> <optional option>"
+    exit 1
+elif [ $# -lt 1 ] # if more than 1 argument is provided, exit the script
+then
+    echo "Error! Too few arguments provided!"
+    echo "Correct syntax is: ./report2 <option> <optional option>"
+    exit 1
 fi
+
+exit 0
 
 
 while [ "$userInput" != "0" ]
