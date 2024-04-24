@@ -154,9 +154,68 @@ then
 
 elif [ $# -eq 2 ] # if 2 arguments are provided, set the defaultLines to the argument provided
 then
-    echo "Two paramerter provided"
     param1=$1
     param2=$2 
+
+    #                       -e n        show last n lines of web server error log for this user, n should be a positive int
+    #                       -l n        this is letter l, gives last n logins (for this user)
+    if [ $param1 = "-i" ] && [ $param2 = "u" ]
+    then
+        #                       -i u        IP address of user
+        userIP=`who am i | cut -d '(' -f2 | cut -d ')' -f1` # get the IP address of the user running the script
+
+        echo
+        echo "      User IP Address : $userIP"
+        echo
+
+    elif [ $param1 = "-i" ] && [ $param2 = "s" ]
+    then
+        #                       -i s        IP address of server
+        serverIP=$(hostname -I | cut -d' ' -f1) # get the IP address of the server
+
+        echo
+        echo "      Server IP Address : $userIP"
+        echo
+
+    fi
+
+    if [ $param1 = "-a" ]
+    then
+        #                       -a n        show last n lines of web server access log for this user, n should be a positive int
+        lines=$param2
+
+        echo
+        echo "      Last $lines lines of web server access log for this user :"
+        echo
+        grep "$InitialIPaddress" /var/log/httpd/access_log | grep -v '/pma/' | tail "-$lines"
+        echo
+
+    elif [ $param1 = "-e" ]
+    then
+        #                       -e n        show last n lines of web server error log for this user, n should be a positive int
+        lines=$param2
+        userIP=`who am i | cut -d '(' -f2 | cut -d ')' -f1` # get the IP address of the user running the script
+
+        echo
+        echo "      Last $lines lines of web server error log for this user :"
+        echo
+        grep "$userIP" /var/log/httpd/error_log | tail "-$lines"
+        echo
+
+    elif [ $param1 = "-l" ]
+    then
+        #                       -l n        this is letter l, gives last n logins (for this user)
+        lines=$param2
+        userIP=`who am i | cut -d '(' -f2 | cut -d ')' -f1` # get the IP address of the user running the script
+
+        echo
+        echo "      Last $lines logins for this user :"
+        echo
+        last -n $n $userName
+        echo
+
+    fi
 fi
+
 
 exit 0
