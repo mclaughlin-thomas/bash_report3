@@ -51,6 +51,40 @@ if [ $# -eq 1 ] # if 1 argument is provided, set the defaultLines to the argumen
 then
     echo "One paramerter provided"
     param1=$1
+ 
+    if [ $param1 = "-m" ]
+    then
+        echo "The same as whoami"
+        echo "Username: $userName"
+    elif [ $param1 = "-n" ]
+    then
+        echo "The same as whoami"
+    elif [ $param1 = "-f" ]
+    then
+        echo "The same as whoami"
+    elif [ $param1 = "-d" ]
+    then
+        echo "The same as whoami"
+    elif [ $param1 = "-s" ]
+    then
+        echo "The same as whoami"
+    elif [ $param1 = "-p" ]
+    then
+        echo "The same as whoami"
+    elif [ $param1 = "-t" ]
+    then
+        echo "The same as whoami"
+    elif [ $param1 = "-u" ]
+    then
+        echo "The same as whoami"
+    elif [ $param1 = "-w" ]
+    then
+        echo "The same as whoami"
+    elif [ $param1 = "-h" ]
+    then
+        echo "The same as whoami"
+    fi
+
 elif [ $# -eq 2 ] # if 2 arguments are provided, set the defaultLines to the argument provided
 then
     echo "Two paramerter provided"
