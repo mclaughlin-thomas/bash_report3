@@ -30,11 +30,9 @@
 
 
 
-userInput=1 # initialize userInput to 1 to enter the loop
 userName=`whoami` # get the username of the user running the script
-InitialIPaddress=`who am i | cut -d '(' -f2 | cut -d ')' -f1` # get the IP address of the user running the script
+userEntryData=$(cat /etc/passwd | grep $userName) # get the user entry data from /etc/passwd file
 
-defaultLines=15 
 
 if [ $# -gt 2 ]; then
     echo "Error! Too many arguments provided!"
@@ -49,47 +47,105 @@ fi
 
 if [ $# -eq 1 ] # if 1 argument is provided, set the defaultLines to the argument provided
 then
-    echo "One paramerter provided"
     param1=$1
  
     if [ $param1 = "-m" ]
     then
-        echo "Username: $userName"
+        #                       -m          me (the same as whoami)
+        echo
+        echo "      Username : $userName"
+        echo
     elif [ $param1 = "-n" ]
     then
-        #-n          username (for example, jonesb)
+        #                       -n          username (for example, jonesb)
+        echo
+        echo "      Username : $userName"
+        echo
+
     elif [ $param1 = "-f" ]
     then
         #                       -f          fullname (of the user)
-        echo "The same as whoami"
+        fullName=$(echo "$userEntryData" | cut -d ':' -f 5)
+        echo
+        echo "      Full Name : $fullName"
+        echo
+
     elif [ $param1 = "-d" ]
     then
         #                       -d          home directory (for this user)
-        echo "The same as whoami"
+        homeDirectory=$(echo "$userEntryData" | cut -d ':' -f 6) # -f 6 because we want 6th column of data as shown above
+        echo
+        echo "      Home Directory : $homeDirectory"
+        echo
+
     elif [ $param1 = "-s" ]
     then
         #                       -s          shell (for this user, will probably be bash)
-        echo "The same as whoami"
+        shell=$(echo "$userEntryData" | cut -d ':' -f 7) # -f 7 because we want 7th column of data as shown above
+        echo
+        echo "      Shell : $shell"
+        echo
+
     elif [ $param1 = "-p" ]
     then
         #                       -p          password expiration info
-        echo "The same as whoami"
+        passwordExpirationLine=$(chage -l $userName | grep "Password expires") # get the password expiration line for the user
+        passwordExpirationDate=$(echo "$passwordExpirationLine" | cut -d ':' -f 2) # -f because we want 2nd column of data as shown above
+
+
+        echo
+        echo "      Password Expiration Information : $passwordExpirationDate"
+        echo
+
     elif [ $param1 = "-t" ]
     then
         #                       -t          display system uptime
-        echo "The same as whoami"
+        echo
+        echo "      System Uptime :"
+        echo
+        echo "$(w)"
+        echo
+
     elif [ $param1 = "-u" ]
     then
         #                       -u          show all logged in users
+        echo
         echo "The same as whoami"
+        echo
+
     elif [ $param1 = "-w" ]
     then
         #                       -w          report if the web server is running
-        echo "The same as whoami"
+        echo
+        if ps aux | grep -q '[h]ttpd'; then # check if the web server is up
+            echo "     The web server is up..."
+        else
+            serverUp=false
+            echo "     The web server is NOT up..."
+        fi
+        echo
+
     elif [ $param1 = "-h" ]
     then
         #                       -h          help (show this information)
-        echo "The same as whoami"
+        echo
+        echo "   -m          me (the same as whoami)"
+        echo "   -i u        IP address of user"
+        echo "   -i s        IP address of server"
+        echo "   -n          username (for example, jonesb)"
+        echo "   -f          fullname (of the user)"
+        echo "   -d          home directory (for this user)"
+        echo "   -s          shell (for this user, will probably be bash)"
+        echo "   -p          password expiration info"
+        echo "   -a n        show last n lines of web server access log for this user, n should be a positive int"
+        echo "   -e n        show last n lines of web server error log for this user, n should be a positive int"
+        echo "   -l n        this is letter l, gives last n logins (for this user)"
+        echo "   -t          display system uptime"
+        echo "   -u          show all logged in users"
+        echo "   -w          report if the web server is running"
+        echo "   -h          help (show this information)"
+        echo
+        
     fi
 
 elif [ $# -eq 2 ] # if 2 arguments are provided, set the defaultLines to the argument provided
@@ -100,170 +156,3 @@ then
 fi
 
 exit 0
-
-
-while [ "$userInput" != "0" ]
-do
-    echo 
-    echo "Report 2"
-    echo
-    echo "   0 -  Quit"
-    echo "   1 -  Show user info including: username, fullname, home directory, shell, password expiration info and IP address"
-    echo "   2 -  Show the last several lines of the webserver access log for this user"
-    echo "   3 -  Show the last several lines of the webserver error log for this user"
-    echo "   4 -  Show the last several logins for this user"
-    echo "   5 -  Process information: Show the number of processes running for the user, the number of processes running on the system, and the percentage of total processes running that belong to the user"
-    echo "   6 -  Show the open TCP ports"
-    echo "   7 -  Display the following system information: uptime and users on the system, and whether the webserver appears to be running"
-    echo "   8 -  Change the default number of lines to show in choices 2, 3, 4"
-    echo "Enter number for your choice: "
-    read userInput
-
-    if [ "$userInput" = "1" ]
-    then
-
-        userEntryData=$(cat /etc/passwd | grep $userName) # get the user entry data from /etc/passwd file
-        passwordExpirationLine=$(chage -l $userName | grep "Password expires") # get the password expiration line for the user
-
-        fullName=$(echo "$userEntryData" | cut -d ':' -f 5) # -f 5 because we want 5th column of data as shown above
-        homeDirectory=$(echo "$userEntryData" | cut -d ':' -f 6) # -f 6 because we want 6th column of data as shown above
-        shell=$(echo "$userEntryData" | cut -d ':' -f 7) # -f 7 because we want 7th column of data as shown above
-        #      username:pass:UID:GID:Fullname:homeDir:shell
-        #         1    :  2 : 3 : 4 :   5    :   6   :  7
-
-        passwordExpirationDate=$(echo "$passwordExpirationLine" | cut -d ':' -f 2) # -f because we want 2nd column of data as shown above
-        #      Password expires     :   Jun 12, 2024
-        #               1           :         2
-
-        echo 
-        echo " (1) User Information:"
-        echo "     - Username : $userName"
-        echo "     - Full Name : $fullName"
-        echo "     - Home Directory : $homeDirectory"
-        echo "     - Shell : $shell"
-        echo "     - Password Expiration Information : $passwordExpirationDate"
-        echo "     - IP Address : $InitialIPaddress"
-        
-        echo
-        echo "Press ENTER"
-        read junk
-
-    elif [ "$userInput" = "2" ]
-    then
-
-        echo
-        echo "Fields are: IP address, date and time, HTTP method, path to page, query string, content type, status code,"
-        echo "content size (bytes), total size (bytes), client browser info, response time (microseconds)"
-        echo
-        grep "$InitialIPaddress" /var/log/httpd/access_log | grep -v '/pma/' | tail "-$defaultLines"
-        echo
-
-        echo
-        echo "Press ENTER"
-        read junk
-
-    elif [ "$userInput" = "3" ]
-    then
-        
-        echo
-        grep "$InitialIPaddress" /var/log/httpd/error_log | tail "-$defaultLines"
-        echo
-
-        echo
-        echo "Press ENTER"
-        read junk
-
-    elif [ "$userInput" = "4" ]
-    then
-        loginData=$(last -$defaultLines $userName | grep -v "wtmp") # get the last several logins for the user
-        echo 
-        echo " (4) Last Several Logins For This User"
-        echo "$loginData"
-
-        echo
-        echo "Press ENTER"
-        read junk
-
-    elif [ "$userInput" = "5" ]
-    then
-
-        maxUserProcess=$(ulimit -u) # get the max number of processes allowed for the user
-        echo
-        echo "Max number of processes allowed for user: $maxUserProcess"
-        echo
-
-        curUserProcess=$(ps -u $userName --no-headers | wc -l) # get the number of processes running for the user
-
-        remainingProcesses=$((maxUserProcess - curUserProcess)) # get the number of processes left for the user
-
-        echo "Number of processes left for this user: $remainingProcesses"
-        echo
-
-
-        echo "Number of processes running for this user: $curUserProcess"
-        echo
-
-        
-
-        echo "------------------------------------------------"
-
-        totalProcess=$(ps aux --no-headers | wc -l) # get the total number of processes running on the system
-        echo "Total processes running on system: $totalProcess"
-        echo
-
-        percentageOfTotal=$(echo "scale=4; $curUserProcess / $totalProcess * 100" | bc) # get the percentage of total processes running that belong to the user
-        echo
-        echo "Percentage of total processes running that belong to user: $percentageOfTotal %"
-        
-        echo
-        echo "Press ENTER"
-        read junk
-
-    elif [ "$userInput" = "6" ]
-    then
-        tcpOpenPortData=$(netstat -tan) # get the open TCP ports
-
-        echo 
-        echo " (6) Open TCP Ports"
-        echo "$tcpOpenPortData"
-
-        echo
-        echo "Press ENTER"
-        read junk
-
-    elif [ "$userInput" = "7" ]
-    then
-        echo 
-        echo " (7) System Information:"
-        echo
-        echo "$(w)"
-        echo
-        if ps aux | grep -q '[h]ttpd'; then # check if the web server is up
-            echo "     The web server is up..."
-        else
-            serverUp=false
-            echo "     The web server is NOT up..."
-        fi
-
-        echo
-        echo "Press ENTER"
-        read junk
-
-    elif [ "$userInput" = "8" ]
-    then
-        echo
-        echo "Enter the new default number of lines to show in choices 2, 3, 4 "
-        read defaultLines # get the new default number of lines to show in choices 2, 3, 4
-    elif [ "$userInput" != "0" ]
-    then
-        echo
-        echo "No such menu option"
-        echo
-        echo "The correct syntax requires a number 0-8 to be entered."
-        echo
-        echo "Press ENTER"
-        read junk
-    fi
-
-    clear
-done
