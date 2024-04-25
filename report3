@@ -5,11 +5,11 @@
 # Author: Thomas McLaughlin
 #
 # Date: Apr 23, 2024
-# Revised: May 02, 2024
+# Revised: Apr 25, 2024
 #
 # Description:   This project is an update from a previous script, report2, and transitions from a menu-driven
-#                approach to a command-line interface approach. In this version, the user can specify their 
-#                requirements through command-line parameters, which prompt the program to display the requested
+#                approach to a command line interface approach. In this version, the user can specify their 
+#                requirements through command line params, which prompt the program to display the requested
 #                information before exiting. Below is a list of the command-line parameters available:
 #
 #                       -m          me (the same as whoami)
@@ -29,16 +29,15 @@
 #                       -h          help (show this information)
 
 
-
 userName=`whoami` # get the username of the user running the script
 userEntryData=$(cat /etc/passwd | grep $userName) # get the user entry data from /etc/passwd file
 
 
-if [ $# -gt 2 ]; then
+if [ $# -gt 2 ]; then # if more than 2 arguments are provided, display an error message
     echo "Error! Too many arguments provided!"
     echo "Correct syntax is: ./report2 <option> [optional value]"
     exit 1
-elif [ $# -eq 0 ]; then
+elif [ $# -eq 0 ]; then # if no arguments are provided, display an error message
     echo "Error! No arguments provided!"
     echo "Correct syntax is: ./report2 <option> [optional value]"
     exit 1
@@ -51,20 +50,21 @@ then
  
     if [ $param1 = "-m" ]
     then
-        #                       -m          me (the same as whoami)
+        # -m          me (the same as whoami)
         echo
         echo "      Username : $userName"
         echo
+
     elif [ $param1 = "-n" ]
     then
-        #                       -n          username (for example, jonesb)
+        # -n          username (for example, jonesb)
         echo
         echo "      Username : $userName"
         echo
 
     elif [ $param1 = "-f" ]
     then
-        #                       -f          fullname (of the user)
+        # -f          fullname (of the user)
         fullName=$(echo "$userEntryData" | cut -d ':' -f 5)
         echo
         echo "      Full Name : $fullName"
@@ -72,7 +72,7 @@ then
 
     elif [ $param1 = "-d" ]
     then
-        #                       -d          home directory (for this user)
+        # -d          home directory (for this user)
         homeDirectory=$(echo "$userEntryData" | cut -d ':' -f 6) # -f 6 because we want 6th column of data as shown above
         echo
         echo "      Home Directory : $homeDirectory"
@@ -80,7 +80,7 @@ then
 
     elif [ $param1 = "-s" ]
     then
-        #                       -s          shell (for this user, will probably be bash)
+        # -s          shell (for this user, will probably be bash)
         shell=$(echo "$userEntryData" | cut -d ':' -f 7) # -f 7 because we want 7th column of data as shown above
         echo
         echo "      Shell : $shell"
@@ -88,7 +88,7 @@ then
 
     elif [ $param1 = "-p" ]
     then
-        #                       -p          password expiration info
+        # -p          password expiration info
         passwordExpirationLine=$(chage -l $userName | grep "Password expires") # get the password expiration line for the user
         passwordExpirationDate=$(echo "$passwordExpirationLine" | cut -d ':' -f 2) # -f because we want 2nd column of data as shown above
 
@@ -99,7 +99,7 @@ then
 
     elif [ $param1 = "-t" ]
     then
-        #                       -t          display system uptime
+        # -t          display system uptime
         echo
         echo "      System Uptime :"
         echo
@@ -108,7 +108,7 @@ then
 
     elif [ $param1 = "-u" ]
     then
-        #                       -u          show all logged in users
+        # -u          show all logged in users
         echo
         echo "      All logged in users :"
         echo
@@ -117,7 +117,7 @@ then
 
     elif [ $param1 = "-w" ]
     then
-        #                       -w          report if the web server is running
+        # -w          report if the web server is running
         echo
         if ps aux | grep -q '[h]ttpd'; then # check if the web server is up
             echo "     The web server is up..."
@@ -129,7 +129,7 @@ then
 
     elif [ $param1 = "-h" ]
     then
-        #                       -h          help (show this information)
+        # -h          help (show this information)
         echo
         echo "   Correct syntax is: ./report2 <option> [optional value]"
         echo
@@ -150,38 +150,46 @@ then
         echo "   -h          help (show this information)"
         echo
         
+    else
+        echo "Error! Invalid argument provided! Do  ./report3 -h  for help!" # if an invalid argument is provided, display an error message
+        echo "Correct syntax is: ./report2 <option> [optional value]"
+        exit 1    
     fi
 
 elif [ $# -eq 2 ] # if 2 arguments are provided, set the defaultLines to the argument provided
 then
-    param1=$1
-    param2=$2 
+    param1=$1 # get the first argument
+    param2=$2 # get the second argument
 
-    #                       -e n        show last n lines of web server error log for this user, n should be a positive int
-    #                       -l n        this is letter l, gives last n logins (for this user)
-    if [ $param1 = "-i" ] && [ $param2 = "u" ]
+    if [ $param1 = "-i" ]
     then
-        #                       -i u        IP address of user
-        userIP=`who am i | cut -d '(' -f2 | cut -d ')' -f1` # get the IP address of the user running the script
 
-        echo
-        echo "      User IP Address : $userIP"
-        echo
+        if [ $param2 = "u" ]
+        then
+            # -i u        IP address of user
+            userIP=`who am i | cut -d '(' -f2 | cut -d ')' -f1` # get the IP address of the user running the script
 
-    elif [ $param1 = "-i" ] && [ $param2 = "s" ]
+            echo
+            echo "      User IP Address : $userIP"
+            echo
+
+        elif [ $param2 = "s" ]
+        then
+            # -i s        IP address of server
+            serverIP=$(hostname -I | cut -d' ' -f1)  # get the IP address of the server
+
+            echo
+            echo "      Server IP Address : $serverIP"
+            echo
+        else
+            echo "Error! Invalid argument provided! Do  ./report3 -h  for help!"
+            echo "Correct syntax is: ./report2 <option> [optional value]"
+            exit 1    
+        fi
+
+    elif [ $param1 = "-a" ]
     then
-        #                       -i s        IP address of server
-        serverIP=$(hostname -I | cut -d' ' -f1)  # get the IP address of the server
-
-        echo
-        echo "      Server IP Address : $serverIP"
-        echo
-
-    fi
-
-    if [ $param1 = "-a" ]
-    then
-        #                       -a n        show last n lines of web server access log for this user, n should be a positive int
+        # -a n        show last n lines of web server access log for this user, n should be a positive int
         lines=$param2
 
         echo
@@ -192,7 +200,7 @@ then
 
     elif [ $param1 = "-e" ]
     then
-        #                       -e n        show last n lines of web server error log for this user, n should be a positive int
+        # -e n        show last n lines of web server error log for this user, n should be a positive int
         lines=$param2
         userIP=`who am i | cut -d '(' -f2 | cut -d ')' -f1` # get the IP address of the user running the script
 
@@ -204,7 +212,7 @@ then
 
     elif [ $param1 = "-l" ]
     then
-        #                       -l n        this is letter l, gives last n logins (for this user)
+        # -l n        this is letter l, gives last n logins (for this user)
         lines=$param2
         loginData=$(last -$lines $userName | grep -v "wtmp") # get the last several logins for the user
 
@@ -214,6 +222,10 @@ then
         echo "$loginData"
         echo
 
+    else
+        echo "Error! Invalid argument provided! Do  ./report3 -h  for help!" # if an invalid argument is provided, display an error message
+        echo "Correct syntax is: ./report2 <option> [optional value]"
+        exit 1    
     fi
 fi
 
