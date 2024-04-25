@@ -173,6 +173,7 @@ then
         then
             # -i s        IP address of server
             serverIP=$(hostname -I | cut -d' ' -f1)  # get the IP address of the server
+            # !!! OR THIS !!! serverIP=$(netstat -nt | grep ":22 " | head -1 | cut -d':' -f2 | cut -d' ' -f1) but this relies on you ssh'ing in
             echo
             echo "      Server IP Address : $serverIP"
             echo
