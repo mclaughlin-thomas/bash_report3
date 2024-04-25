@@ -91,8 +91,6 @@ then
         # -p          password expiration info
         passwordExpirationLine=$(chage -l $userName | grep "Password expires") # get the password expiration line for the user
         passwordExpirationDate=$(echo "$passwordExpirationLine" | cut -d ':' -f 2) # -f because we want 2nd column of data as shown above
-
-
         echo
         echo "      Password Expiration Information : $passwordExpirationDate"
         echo
@@ -122,7 +120,6 @@ then
         if ps aux | grep -q '[h]ttpd'; then # check if the web server is up
             echo "     The web server is up..."
         else
-            serverUp=false
             echo "     The web server is NOT up..."
         fi
         echo
@@ -168,7 +165,6 @@ then
         then
             # -i u        IP address of user
             userIP=`who am i | cut -d '(' -f2 | cut -d ')' -f1` # get the IP address of the user running the script
-
             echo
             echo "      User IP Address : $userIP"
             echo
@@ -177,10 +173,10 @@ then
         then
             # -i s        IP address of server
             serverIP=$(hostname -I | cut -d' ' -f1)  # get the IP address of the server
-
             echo
             echo "      Server IP Address : $serverIP"
             echo
+        
         else
             echo "Error! Invalid argument provided! Do  ./report3 -h  for help!"
             echo "Correct syntax is: ./report2 <option> [optional value]"
@@ -191,7 +187,6 @@ then
     then
         # -a n        show last n lines of web server access log for this user, n should be a positive int
         lines=$param2
-
         echo
         echo "      Last $lines lines of web server access log for this user :"
         echo
@@ -203,7 +198,6 @@ then
         # -e n        show last n lines of web server error log for this user, n should be a positive int
         lines=$param2
         userIP=`who am i | cut -d '(' -f2 | cut -d ')' -f1` # get the IP address of the user running the script
-
         echo
         echo "      Last $lines lines of web server error log for this user :"
         echo
@@ -215,7 +209,6 @@ then
         # -l n        this is letter l, gives last n logins (for this user)
         lines=$param2
         loginData=$(last -$lines $userName | grep -v "wtmp") # get the last several logins for the user
-
         echo
         echo "      Last $lines logins for this user :"
         echo
